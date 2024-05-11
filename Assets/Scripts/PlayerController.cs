@@ -8,11 +8,12 @@ public class PlayerController : MonoBehaviour
     public float movementSpeed = 5f;
     float rotationSpeed = 10f;
     private Rigidbody rb;
+    private Animator animator;
  
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        
+        animator = GetComponent<Animator>();
     }
 
     void Update()
@@ -21,12 +22,17 @@ public class PlayerController : MonoBehaviour
         var vertical = Input.GetAxis("Vertical");
         var movementDirection = new Vector3(horizontal, 0, vertical);
 
+        animator.SetBool("isRunning", movementDirection != Vector3.zero);
+
         if (movementDirection == Vector3.zero)
         {
-            Debug.Log("Su an input yok");
+            Debug.Log("Input yok");
+            rb.velocity = Vector3.zero;
             return;
-        } 
+        }
 
+
+        
         rb.velocity = movementDirection * movementSpeed;
 
         var rotationDireciton = Quaternion.LookRotation(movementDirection);
