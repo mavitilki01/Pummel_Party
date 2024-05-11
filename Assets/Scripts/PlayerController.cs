@@ -20,7 +20,7 @@ public class PlayerController : MonoBehaviour
     {
         float horizontal = Input.GetAxis("Horizontal");
         var vertical = Input.GetAxis("Vertical");
-        var movementDirection = new Vector3(horizontal, 0, vertical);
+        var movementDirection = new Vector3(-horizontal, 0, -vertical);
 
         animator.SetBool("isRunning", movementDirection != Vector3.zero);
 
