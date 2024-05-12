@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -10,7 +11,10 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private Animator animator;
     public List<GameObject> goldList;
-    public int carry; 
+    public int carry;
+
+    public float reduceSpeed = 0.5f;
+    private float baseMovementSpeed;
 
 
     public int carryLimit => goldList.Count;
@@ -18,6 +22,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        baseMovementSpeed = movementSpeed;
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
     }
@@ -52,7 +57,25 @@ public class PlayerController : MonoBehaviour
         
         goldList[carry].gameObject.SetActive(true);
         carry++;
+
+
+        movementSpeed -= reduceSpeed;
+        
+
+
         return true;
     
+    }
+
+    public int LoadGoldsToTruck()
+    {
+        var carryingGold = carry;
+        if (carryingGold == 0) return 0;
+
+        foreach (var gold in goldList)
+            gold.SetActive(false);
+        carry = 0;
+        movementSpeed = baseMovementSpeed;
+        return carryingGold;
     }
 }

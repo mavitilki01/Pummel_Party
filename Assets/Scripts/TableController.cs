@@ -18,12 +18,18 @@ public class TableController : MonoBehaviour
         if (player.CollectGold())
         {
             goldObject.SetActive(false);
+
+            // 5- 15 saniye içinde random reload etmek
+            Invoke(nameof(ReloadGold), Random.Range(5f,15f));
         }
 
     }
+    private void ReloadGold()
+    {
+        goldObject.SetActive(true);
+    }
 
 
-  
     void Start()
     {
         
