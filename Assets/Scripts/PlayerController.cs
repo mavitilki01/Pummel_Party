@@ -9,7 +9,13 @@ public class PlayerController : MonoBehaviour
     float rotationSpeed = 10f;
     private Rigidbody rb;
     private Animator animator;
- 
+    public List<GameObject> goldList;
+    public int carry; 
+
+
+    public int carryLimit => goldList.Count;
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -23,6 +29,7 @@ public class PlayerController : MonoBehaviour
         var movementDirection = new Vector3(-horizontal, 0, -vertical);
 
         animator.SetBool("isRunning", movementDirection != Vector3.zero);
+        animator.SetBool("isCarrying", carry != 0);
 
         if (movementDirection == Vector3.zero)
         {
@@ -37,5 +44,15 @@ public class PlayerController : MonoBehaviour
 
         var rotationDireciton = Quaternion.LookRotation(movementDirection);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotationDireciton, rotationSpeed * Time.deltaTime);
+    }
+
+    public bool CollectGold()
+    {
+        if (carry == carryLimit) return false;
+        
+        goldList[carry].gameObject.SetActive(true);
+        carry++;
+        return true;
+    
     }
 }
