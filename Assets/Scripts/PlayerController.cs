@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEditor.UIElements;
 using UnityEngine;
 
@@ -15,20 +16,23 @@ public class PlayerController : MonoBehaviour
 
     public float reduceSpeed = 0.5f;
     private float baseMovementSpeed;
-
-
     public int carryLimit => goldList.Count;
 
-
+    public Transform boneParent;
+    public bool CanMove = true;
+    public Transform spinePosition;
     void Start()
     {
         baseMovementSpeed = movementSpeed;
         rb = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
+
+        Ragdoll(false);
     }
 
     void Update()
-    {
+    { if (!CanMove) return;
+
         float horizontal = Input.GetAxis("Horizontal");
         var vertical = Input.GetAxis("Vertical");
         var movementDirection = new Vector3(-horizontal, 0, -vertical);
@@ -67,7 +71,7 @@ public class PlayerController : MonoBehaviour
     
     }
 
-    public int LoadGoldsToTruck()
+    public int DropGoldsFromHand()
     {
         var carryingGold = carry;
         if (carryingGold == 0) return 0;
@@ -78,4 +82,30 @@ public class PlayerController : MonoBehaviour
         movementSpeed = baseMovementSpeed;
         return carryingGold;
     }
+    public void Ragdoll(bool isActive)
+    {
+        animator.enabled = !isActive;
+        var colliders = boneParent.GetComponentsInChildren<Collider>();
+        var rigidbodies = boneParent.GetComponentsInChildren<Rigidbody>();
+       
+        foreach (var coll in colliders)
+            coll.enabled = isActive;
+        foreach ( var rig in rigidbodies)
+            rig.isKinematic = !isActive;
+
+        GetComponent<Collider>().enabled = !isActive;
+        CanMove = !isActive;
+
+        if (!isActive)
+            StartCoroutine(CloseRagdoll());
+
+}
+    public IEnumerator CloseRagdoll()
+    {
+        yield return new WaitForSeconds(5f);
+        Ragdoll(false);
+
+        transform.position = new Vector3(spinePosition.position.x, 0, spinePosition.position.z);
+    }
+
 }

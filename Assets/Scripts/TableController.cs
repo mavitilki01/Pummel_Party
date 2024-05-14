@@ -11,9 +11,9 @@ public class TableController : MonoBehaviour
     private void OnCollisionEnter(Collision other)
     {
         if (!isGoldCollectable) return;
-       if (other.gameObject.tag != "Player")  return;
 
-       var player = other.gameObject.GetComponent<PlayerController>();
+        if (other.gameObject.tag != "Player")  return;
+        var player = other.gameObject.GetComponent<PlayerController>();
        
         if (player.CollectGold())
         {
@@ -29,15 +29,4 @@ public class TableController : MonoBehaviour
         goldObject.SetActive(true);
     }
 
-
-    void Start()
-    {
-        
-    }
-
-  
-    void Update()
-    {
-        
-    }
 }
